@@ -1,4 +1,5 @@
 use std::fmt::Debug;
+use std::rc::Rc;
 
 use term::Term;
 use context::Context;
@@ -15,11 +16,17 @@ pub trait Operate<N: Num>: Debug {
 	fn eval(&self, ctx: &Context<N>) -> Calculation<N>;
 	/// Convert the operation to a string representation
 	fn to_string(&self) -> String;
+
+  fn get_op(&self) -> String;
+  fn get_args(&self) -> Vec<Rc<Term<N>>>;
 }
 
 #[derive(Debug, Clone)]
-pub(crate) struct Add<N: Num> {
+/// Represents addition
+pub struct Add<N: Num> {
+  /// left arg
 	pub a: Term<N>,
+  /// left arg
 	pub b: Term<N>,
 }
 
@@ -36,11 +43,19 @@ impl<N: Num + 'static> Operate<N> for Add<N> {
 	fn to_string(&self) -> String {
 		format!("({} + {})", self.a, self.b)
 	}
+
+  fn get_op(&self) -> String { return "+".to_string(); }
+  fn get_args(&self) -> Vec<Rc<Term<N>>> {
+    return vec!(Rc::new(self.a.clone()),Rc::new(self.b.clone()));
+  }
 }
 
 #[derive(Debug, Clone)]
-pub(crate) struct Sub<N: Num> {
+/// Represents subtraction
+pub struct Sub<N: Num> {
+  /// left arg
 	pub a: Term<N>,
+  /// right arg
 	pub b: Term<N>,
 }
 
@@ -57,11 +72,19 @@ impl<N: Num + 'static> Operate<N> for Sub<N> {
 	fn to_string(&self) -> String {
 		format!("({} - {})", self.a, self.b)
 	}
+
+  fn get_op(&self) -> String { return "-".to_string(); }
+  fn get_args(&self) -> Vec<Rc<Term<N>>> {
+    return vec!(Rc::new(self.a.clone()),Rc::new(self.b.clone()));
+  }
 }
 
 #[derive(Debug, Clone)]
-pub(crate) struct Mul<N: Num> {
+/// Represents multiplication
+pub struct Mul<N: Num> {
+  /// left arg
 	pub a: Term<N>,
+  /// right arg
 	pub b: Term<N>,
 }
 
@@ -78,11 +101,19 @@ impl<N: Num + 'static> Operate<N> for Mul<N> {
 	fn to_string(&self) -> String {
 		format!("({} × {})", self.a, self.b)
 	}
+
+  fn get_op(&self) -> String { return "*".to_string(); }
+  fn get_args(&self) -> Vec<Rc<Term<N>>> {
+    return vec!(Rc::new(self.a.clone()),Rc::new(self.b.clone()));
+  }
 }
 
 #[derive(Debug, Clone)]
-pub(crate) struct Div<N: Num> {
+/// Represents division
+pub struct Div<N: Num> {
+  /// left arg
 	pub a: Term<N>,
+  /// right arg
 	pub b: Term<N>,
 }
 
@@ -99,11 +130,19 @@ impl<N: Num + 'static> Operate<N> for Div<N> {
 	fn to_string(&self) -> String {
 		format!("({} ÷ {})", self.a, self.b)
 	}
+
+  fn get_op(&self) -> String { return "/".to_string(); }
+  fn get_args(&self) -> Vec<Rc<Term<N>>> {
+    return vec!(Rc::new(self.a.clone()),Rc::new(self.b.clone()));
+  }
 }
 
 #[derive(Debug, Clone)]
-pub(crate) struct Pow<N: Num> {
+/// Represents 'raised to power'
+pub struct Pow<N: Num> {
+  /// left arg
 	pub a: Term<N>,
+  /// right arg
 	pub b: Term<N>,
 }
 
@@ -120,11 +159,19 @@ impl<N: Num + 'static> Operate<N> for Pow<N> {
 	fn to_string(&self) -> String {
 		format!("({} ^ {})", self.a, self.b)
 	}
+
+  fn get_op(&self) -> String { return "^".to_string(); }
+  fn get_args(&self) -> Vec<Rc<Term<N>>> {
+    return vec!(Rc::new(self.a.clone()),Rc::new(self.b.clone()));
+  }
 }
 
 #[derive(Debug, Clone)]
-pub(crate) struct PlusMinus<N: Num> {
+/// Represents 'plus or minus'
+pub struct PlusMinus<N: Num> {
+  /// left arg
 	pub a: Term<N>,
+  /// right arg
 	pub b: Term<N>,
 }
 
@@ -146,10 +193,15 @@ impl<N: Num + 'static> Operate<N> for PlusMinus<N> {
 	fn to_string(&self) -> String {
 		format!("({} ± {})", self.a, self.b)
 	}
+
+  fn get_op(&self) -> String { return "±".to_string(); }
+  fn get_args(&self) -> Vec<Rc<Term<N>>> { return vec!(Rc::new(self.a.clone())); }
 }
 
 #[derive(Debug, Clone)]
-pub(crate) struct Neg<N: Num> {
+/// Represents negation
+pub struct Neg<N: Num> {
+  /// arg
 	pub a: Term<N>,
 }
 
@@ -165,10 +217,15 @@ impl<N: Num + 'static> Operate<N> for Neg<N> {
 	fn to_string(&self) -> String {
 		format!("(-{})", self.a)
 	}
+
+  fn get_op(&self) -> String { return "-".to_string(); }
+  fn get_args(&self) -> Vec<Rc<Term<N>>> { return vec!(Rc::new(self.a.clone())); }
 }
 
 #[derive(Debug, Clone)]
-pub(crate) struct Pos<N: Num> {
+/// Represents prefix +
+pub struct Pos<N: Num> {
+  /// arg
 	pub a: Term<N>,
 }
 
@@ -182,10 +239,15 @@ impl<N: Num + 'static> Operate<N> for Pos<N> {
 	fn to_string(&self) -> String {
 		format!("(+{})", self.a)
 	}
+
+  fn get_op(&self) -> String { return "+".to_string(); }
+  fn get_args(&self) -> Vec<Rc<Term<N>>> { return vec!(Rc::new(self.a.clone())); }
 }
 
 #[derive(Debug, Clone)]
-pub(crate) struct PosNeg<N: Num> {
+/// Represents plus or minus
+pub struct PosNeg<N: Num> {
+  /// arg
 	pub a: Term<N>,
 }
 
@@ -204,10 +266,15 @@ impl<N: Num + 'static> Operate<N> for PosNeg<N> {
 	fn to_string(&self) -> String {
 		format!("(±{})", self.a)
 	}
+
+  fn get_op(&self) -> String { return "±".to_string(); }
+  fn get_args(&self) -> Vec<Rc<Term<N>>> { return vec!(Rc::new(self.a.clone())); }
 }
 
 #[derive(Debug, Clone)]
-pub(crate) struct Fact<N: Num> {
+/// Represents factorial
+pub struct Fact<N: Num> {
+  /// arg
 	pub a: Term<N>,
 }
 
@@ -222,10 +289,15 @@ impl<N: Num + 'static> Operate<N> for Fact<N> {
 	fn to_string(&self) -> String {
 		format!("({}!)", self.a)
 	}
+
+  fn get_op(&self) -> String { return "!".to_string(); }
+  fn get_args(&self) -> Vec<Rc<Term<N>>> { return vec!(Rc::new(self.a.clone())); }
 }
 
 #[derive(Debug, Clone)]
-pub(crate) struct Percent<N: Num> {
+/// Represents 'as a percentage'
+pub struct Percent<N: Num> {
+  /// arg
 	pub a: Term<N>,
 }
 
@@ -241,4 +313,7 @@ impl<N: Num + 'static> Operate<N> for Percent<N> {
 	fn to_string(&self) -> String {
 		format!("({}%)", self.a)
 	}
+
+  fn get_op(&self) -> String { return "%".to_string(); }
+  fn get_args(&self) -> Vec<Rc<Term<N>>> { return vec!(Rc::new(self.a.clone())); }
 }

@@ -153,6 +153,7 @@ pub use errors::{EvalError, MathError, ParseError};
 pub use num::Num;
 pub use opers::Calculation;
 pub use answer::Answer;
+pub use answer::Answer::*;
 
 /// Parse and evaluate a string
 pub fn eval<N: Num + 'static>(expr: &str) -> Result<Answer<N>, EvalError> {

@@ -1,34 +1,53 @@
 #[derive(Debug, Clone, PartialEq)]
-pub(crate) enum Op {
+/// Operations used in expressions
+pub enum Op {
+  /// Contains the infix operations
 	In(In),
+  /// Contains the prefix operations
 	Pre(Pre),
+  /// Contains the suffix operations
 	Post(Post),
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub(crate) enum In {
+/// Infix operations used in expressions
+pub enum In {
+  /// Raised to power
 	Pow,
+  /// Multiply
 	Mul,
+  /// Divide
 	Div,
-	Add,
-	Sub,
+  /// Add
+  Add,
+  /// Subtract
+  Sub,
+  /// Plus or minus
 	PlusMinus,
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub(crate) enum Pre {
-	Neg,
+/// Prefix operations used in expressions
+pub enum Pre {
+  /// Invert
+  Neg,
+  /// Prefix plus
 	Pos,
+  /// Plus or minus
 	PosNeg,
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub(crate) enum Post {
+/// Suffix operations used in expressions
+pub enum Post {
+  /// Factorial
 	Fact,
+  /// Represents a percentage
 	Percent,
 }
 
 impl Op {
+  /// Returns the precedence of the indicated operation.
 	pub fn precedence(&self) -> i32 {
 		use self::In::*;
 		use self::Pre::*;
@@ -49,6 +68,7 @@ impl Op {
 		}
 	}
 
+  /// Tells whether the operation is left associative.
 	pub fn is_left_associative(&self) -> bool {
 		use self::In::*;
 		use self::Pre::*;
@@ -68,6 +88,7 @@ impl Op {
 		}
 	}
 
+  /// Get a string representation.
 	pub fn to_string(&self) -> String {
 		use self::In::*;
 		use self::Pre::*;
